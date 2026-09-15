@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trading Logbook — Opciones Financieras</title>
+<title>Small Caps Log — Bitácora de Acciones</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,28 +11,28 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root {
-  --bg: #0a0a0f;
-  --bg-card: #12121a;
-  --bg-card-hover: #1a1a25;
-  --border: #1e1e2e;
-  --border-light: #2a2a3e;
-  --text: #e4e4ed;
-  --text-muted: #7a7a8e;
-  --text-dim: #4a4a5e;
-  --green: #00d4aa;
-  --green-bg: rgba(0,212,170,0.08);
-  --green-border: rgba(0,212,170,0.2);
-  --red: #ff4757;
-  --red-bg: rgba(255,71,87,0.08);
-  --red-border: rgba(255,71,87,0.2);
-  --blue: #5b7fff;
-  --blue-bg: rgba(91,127,255,0.08);
-  --purple: #a855f7;
-  --orange: #ff9f43;
-  --yellow: #ffd43b;
+  --bg: #f6f6f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f1f5;
+  --border: #e7e7ee;
+  --border-light: #d7d8e2;
+  --text: #17171f;
+  --text-muted: #6b6b7a;
+  --text-dim: #9a9aab;
+  --green: #0ea472;
+  --green-bg: rgba(14,164,114,0.08);
+  --green-border: rgba(14,164,114,0.25);
+  --red: #e5484d;
+  --red-bg: rgba(229,72,77,0.08);
+  --red-border: rgba(229,72,77,0.25);
+  --blue: #3b5bdb;
+  --blue-bg: rgba(59,91,219,0.08);
+  --purple: #8b5cf6;
+  --orange: #f97316;
+  --yellow: #d4a600;
   --radius: 12px;
   --radius-sm: 8px;
-  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --shadow: 0 4px 24px rgba(20,20,40,0.08);
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -60,14 +60,17 @@ body {
   border-bottom: 1px solid var(--border);
   padding: 0 32px;
   backdrop-filter: blur(12px);
-  background: rgba(18,18,26,0.92);
+  background: rgba(255,255,255,0.92);
 }
 
 .header-inner {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
+  gap: 10px;
+  min-height: 64px;
+  padding: 10px 0;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -79,18 +82,9 @@ body {
   flex-shrink: 0;
 }
 
-.header-logo .icon {
-  width: 32px; height: 32px;
-  background: linear-gradient(135deg, var(--green), var(--blue));
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 800;
-  color: #000;
-}
-
 .header-logo span {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
   letter-spacing: -0.3px;
 }
 
@@ -132,11 +126,11 @@ body {
   position: absolute;
   top: 3px;
   height: calc(100% - 6px);
-  background: var(--blue);
+  background: var(--text);
   border-radius: 8px;
   transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
-  box-shadow: 0 2px 8px rgba(91,127,255,0.3);
+  box-shadow: 0 2px 8px rgba(23,23,31,0.25);
 }
 
 /* Header actions */
@@ -290,11 +284,6 @@ tbody tr:last-child td { border-bottom: none; }
   font-weight: 600;
   text-transform: uppercase;
 }
-
-.badge-call { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
-.badge-put { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
-.badge-day { background: rgba(255,159,67,0.1); color: var(--orange); border: 1px solid rgba(255,159,67,0.25); }
-.badge-swing { background: rgba(168,85,247,0.1); color: var(--purple); border: 1px solid rgba(168,85,247,0.25); }
 
 .btn {
   display: inline-flex;
@@ -554,6 +543,58 @@ textarea.form-input { resize: vertical; min-height: 60px; }
   margin-top: 2px;
 }
 
+.daily-size-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.daily-size-row:last-child { border-bottom: none; }
+
+.daily-size-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.daily-size-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.daily-size-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--blue);
+  transition: width 0.3s;
+}
+
+.daily-size-bar-fill.over-limit { background: var(--red); }
+
+.daily-size-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 13px;
+  width: 150px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.daily-size-alert {
+  color: var(--red);
+  font-weight: 700;
+  font-size: 11px;
+  margin-left: 6px;
+}
+
+
 .asset-bar {
   display: flex;
   align-items: center;
@@ -806,8 +847,7 @@ textarea.form-input { resize: vertical; min-height: 60px; }
   <header class="top-header">
     <div class="header-inner">
       <div class="header-logo">
-        <div class="icon">TL</div>
-        <span>Trading Log</span>
+        <span style="color:var(--orange);">Small Caps</span>
       </div>
 
       <nav class="slide-nav" id="slide-nav">
@@ -843,6 +883,10 @@ textarea.form-input { resize: vertical; min-height: 60px; }
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           Excel
         </button>
+        <button class="header-btn" onclick="exportHTML()" style="color:var(--green);border-color:var(--green-border);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          Guardar en HTML
+        </button>
       </div>
     </div>
   </header>
@@ -853,11 +897,12 @@ textarea.form-input { resize: vertical; min-height: 60px; }
       <div class="section-header">
         <h1 class="section-title" style="font-size:22px;">Dashboard</h1>
         <div class="filters">
+          <select class="filter-select" id="dash-month" onchange="refreshDashboard()"></select>
           <select class="filter-select" id="dash-year" onchange="refreshDashboard()"></select>
         </div>
       </div>
 
-      <div class="capital-display" onclick="openCapitalModal()">
+      <div class="capital-display" onclick="openCapitalModal(parseInt(document.getElementById('dash-year').value), parseInt(document.getElementById('dash-month').value))">
         <div>
           <div class="label">Capital Inicial</div>
           <div class="value" id="capital-display-value">$0.00</div>
@@ -882,6 +927,14 @@ textarea.form-input { resize: vertical; min-height: 60px; }
         <div class="section-header"><div class="section-title">Top Activos por P&L</div></div>
         <div id="top-assets"></div>
       </div>
+
+      <div class="card" style="margin-top:24px;">
+        <div class="section-header">
+          <div class="section-title">⚡ Tamaño Desplegado por Día</div>
+          <div id="daylimit-label" style="font-size:12px;color:var(--text-muted);"></div>
+        </div>
+        <div id="daily-size-grid"></div>
+      </div>
     </div>
 
     <!-- ==================== OPERATIVAS ==================== -->
@@ -905,18 +958,24 @@ textarea.form-input { resize: vertical; min-height: 60px; }
           <thead>
             <tr>
               <th>#</th>
-              <th>Fecha</th>
+              <th>Fecha Compra</th>
+              <th>Hora Compra</th>
+              <th>Hora Venta</th>
+              <th>Duración (min)</th>
               <th>Ticker</th>
-              <th>Tipo</th>
-              <th>Estrategia</th>
-              <th>Contratos</th>
-              <th>Costo/Contr.</th>
-              <th>Venta/Contr.</th>
+              <th>Volumen Compra ($)</th>
+              <th># Acciones</th>
+              <th>Vol. Mercado</th>
+              <th>Precio Compra</th>
+              <th>Precio Venta</th>
               <th>Comisiones</th>
               <th>P&L ($)</th>
-              <th>P&L (%)</th>
+              <th>P&L (%) Op.</th>
+              <th>% Cuenta</th>
               <th>R:R</th>
+              <th>Sentimiento</th>
               <th>Notas</th>
+              <th>Captura</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -989,6 +1048,7 @@ textarea.form-input { resize: vertical; min-height: 60px; }
         </div>
       </div>
     </div>
+
   </main>
 </div>
 
@@ -1001,35 +1061,49 @@ textarea.form-input { resize: vertical; min-height: 60px; }
     </div>
     <form id="trade-form" onsubmit="saveTrade(event)">
       <input type="hidden" id="trade-id">
+      <input type="hidden" id="trade-screenshot">
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Fecha de Compra</label>
           <input type="date" class="form-input" id="trade-date" required>
         </div>
         <div class="form-group">
-          <label class="form-label">Ticker</label>
-          <input type="text" class="form-input" id="trade-ticker" placeholder="TSLA, SPY, AAPL..." required style="text-transform:uppercase;">
+          <label class="form-label">Hora de Compra</label>
+          <input type="time" class="form-input" id="trade-buy-time">
         </div>
         <div class="form-group">
-          <label class="form-label">Tipo de Opción</label>
-          <select class="form-input" id="trade-type" required>
-            <option value="CALL">CALL</option>
-            <option value="PUT">PUT</option>
-          </select>
+          <label class="form-label">Hora de Venta</label>
+          <input type="time" class="form-input" id="trade-sell-time">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label"># Contratos</label>
-          <input type="number" class="form-input" id="trade-contracts" min="1" step="1" required>
+          <label class="form-label">Ticker</label>
+          <input type="text" class="form-input" id="trade-ticker" placeholder="AAPL, TSLA, GME..." required style="text-transform:uppercase;">
         </div>
         <div class="form-group">
-          <label class="form-label">Costo por Contrato ($)</label>
-          <input type="number" class="form-input" id="trade-cost" min="0" step="0.01" required>
+          <label class="form-label">Volumen de Compra ($)</label>
+          <input type="number" class="form-input" id="trade-volume-usd" min="0" step="0.01" placeholder="Ej: 1250" required oninput="autoCalcShares()">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Precio de Compra ($)</label>
+          <input type="number" class="form-input" id="trade-cost" min="0" step="0.0001" required oninput="autoCalcShares()">
         </div>
         <div class="form-group">
-          <label class="form-label">Precio de Venta por Contrato ($)</label>
-          <input type="number" class="form-input" id="trade-sell" min="0" step="0.01" required>
+          <label class="form-label">Precio de Venta ($)</label>
+          <input type="number" class="form-input" id="trade-sell" min="0" step="0.0001" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label"># Acciones <span id="shares-auto-label" style="color:var(--orange);font-size:10px;">AUTO</span></label>
+          <input type="number" class="form-input" id="trade-volume" min="0" step="1" placeholder="Auto-calculado" oninput="document.getElementById('shares-auto-label').textContent='MANUAL'">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Volumen de Mercado <span style="color:var(--text-dim);font-size:10px;">LIQUIDEZ</span></label>
+          <input type="number" class="form-input" id="trade-market-volume" min="0" step="1" placeholder="Ej: 5000000">
         </div>
       </div>
       <div class="form-row">
@@ -1041,17 +1115,25 @@ textarea.form-input { resize: vertical; min-height: 60px; }
           <label class="form-label">Comisión Venta ($)</label>
           <input type="number" class="form-input" id="trade-comm-sell" min="0" step="0.01" value="0" placeholder="0.00">
         </div>
-        <div class="form-group">
-          <label class="form-label">Estrategia</label>
-          <select class="form-input" id="trade-strategy">
-            <option value="DAY">Day Trading</option>
-            <option value="SWING">Swing Trading</option>
-          </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Sentimiento de la Operativa (NPS 0–10)</label>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <input type="range" id="trade-sentiment" min="0" max="10" step="1" value="5" style="flex:1;" oninput="updateSentimentLabel(this.value)">
+          <span id="sentiment-label" style="font-family:'JetBrains Mono',monospace;font-weight:700;min-width:120px;text-align:right;">5 · Neutral</span>
         </div>
       </div>
       <div class="form-group">
         <label class="form-label">Notas</label>
-        <textarea class="form-input" id="trade-notes" placeholder="Razón de entrada, observaciones..."></textarea>
+        <textarea class="form-input" id="trade-notes" placeholder="Setup, catalizador, razón de entrada/salida..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Captura de Pantalla</label>
+        <input type="file" class="form-input" id="trade-screenshot-input" accept="image/*" onchange="handleScreenshotUpload(event)" style="padding:8px 10px;">
+        <div id="screenshot-preview-wrap" style="display:none;margin-top:10px;position:relative;">
+          <img id="screenshot-preview" style="max-width:100%;max-height:220px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <button type="button" class="btn btn-sm btn-danger" style="position:absolute;top:8px;right:8px;" onclick="removeScreenshot()">Quitar</button>
+        </div>
       </div>
       <div class="modal-actions">
         <button type="button" class="btn" onclick="closeTradeModal()">Cancelar</button>
@@ -1063,14 +1145,26 @@ textarea.form-input { resize: vertical; min-height: 60px; }
 
 <!-- Capital Modal -->
 <div class="modal-overlay" id="capital-modal">
-  <div class="modal" style="max-width:400px;">
+  <div class="modal" style="max-width:420px;">
     <div class="modal-title">
-      <span>Capital Inicial</span>
+      <span id="capital-modal-title">Capital Inicial</span>
       <button class="btn btn-icon" onclick="closeCapitalModal()">&times;</button>
     </div>
+    <input type="hidden" id="capital-modal-year">
+    <input type="hidden" id="capital-modal-month">
     <div class="form-group">
-      <label class="form-label">Monto en USD</label>
+      <label class="form-label">Capital de inicio del mes (USD)</label>
       <input type="number" class="form-input" id="capital-input" min="0" step="0.01" placeholder="10000">
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:-8px;margin-bottom:16px;">
+      Este capital se usará solo para calcular el ROI de este mes.
+    </div>
+    <div class="form-group">
+      <label class="form-label" style="color:var(--orange);">⚡ Límite de Tamaño por Día ($)</label>
+      <input type="number" class="form-input" id="daylimit-input" min="0" step="0.01" placeholder="Ej: 2000">
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:-8px;margin-bottom:8px;">
+      Máximo en dólares desplegado por día. El dashboard mostrará alertas al superarlo.
     </div>
     <div class="modal-actions">
       <button class="btn" onclick="closeCapitalModal()">Cancelar</button>
@@ -1099,7 +1193,7 @@ textarea.form-input { resize: vertical; min-height: 60px; }
       <div style="padding:16px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);">
         <div style="font-weight:600;font-size:13px;margin-bottom:8px;">Formato esperado (columnas):</div>
         <div style="font-size:12px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;line-height:1.8;">
-          Fecha | Ticker | Tipo (CALL/PUT) | Estrategia (DAY/SWING) | Contratos | Costo/Contrato | Venta/Contrato | Com. Compra | Com. Venta | Notas<br>
+          Fecha | Hora Compra | Hora Venta | Ticker | Volumen de Compra ($) | # Acciones | Volumen de Mercado | Precio Compra | Precio Venta | Com. Compra | Com. Venta | Notas<br>
           <span style="color:var(--text-dim);">Las columnas se pueden mapear manualmente si tienen nombres diferentes</span>
         </div>
       </div>
@@ -1138,8 +1232,11 @@ textarea.form-input { resize: vertical; min-height: 60px; }
 </div>
 
 <script>
-const STORAGE_KEY = 'trading_logbook';
-const CAPITAL_KEY = 'trading_capital';
+const STORAGE_KEY = 'sc_logbook';
+const CAPITAL_KEY = 'sc_capital';
+const DAYLIMIT_KEY = 'sc_daylimit';
+const SEED_TRADES = []; // __SEED__
+const SENTIMENT_LABELS = { 0:'Muy Negativo', 1:'Muy Negativo', 2:'Negativo', 3:'Negativo', 4:'Algo Negativo', 5:'Neutral', 6:'Algo Positivo', 7:'Positivo', 8:'Positivo', 9:'Muy Positivo', 10:'Muy Positivo' };
 const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const MONTH_SHORT = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
@@ -1152,12 +1249,67 @@ function saveTrades(trades) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(trades));
 }
 
-function getCapital() {
+function seedFromHTML() {
+  if (!SEED_TRADES.length) return;
+  const existing = loadTrades();
+  const existingIds = new Set(existing.map(t => t.id));
+  const newOnes = SEED_TRADES.filter(t => !existingIds.has(t.id));
+  if (newOnes.length) saveTrades([...existing, ...newOnes]);
+}
+
+async function exportHTML() {
+  const trades = loadTrades();
+  if (!trades.length) { showToast('No hay operativas para guardar', true); return; }
+  try {
+    const resp = await fetch(window.location.href);
+    let html = await resp.text();
+    const seedJson = JSON.stringify(trades);
+    html = html.replace(/const SEED_TRADES = \[[\s\S]*?\]; \/\/ __SEED__/,
+      `const SEED_TRADES = ${seedJson}; // __SEED__`);
+    downloadFile(html, 'small-caps.html', 'text/html');
+    showToast(`HTML exportado con ${trades.length} operativa(s)`);
+  } catch(e) {
+    showToast('Error al exportar: ' + e.message, true);
+  }
+}
+
+function getCapital(year, month) {
+  if (year !== undefined && month !== undefined) {
+    const key = CAPITAL_KEY + '_' + year + '-' + String(month + 1).padStart(2, '0');
+    const val = localStorage.getItem(key);
+    if (val !== null) return parseFloat(val) || 0;
+  }
   return parseFloat(localStorage.getItem(CAPITAL_KEY)) || 0;
 }
 
-function setCapital(val) {
-  localStorage.setItem(CAPITAL_KEY, val.toString());
+function setCapital(val, year, month) {
+  if (year !== undefined && month !== undefined) {
+    const key = CAPITAL_KEY + '_' + year + '-' + String(month + 1).padStart(2, '0');
+    localStorage.setItem(key, val.toString());
+  } else {
+    localStorage.setItem(CAPITAL_KEY, val.toString());
+  }
+}
+
+function getDayLimit(year, month) {
+  const key = DAYLIMIT_KEY + '_' + year + '-' + String(month + 1).padStart(2, '0');
+  const val = localStorage.getItem(key);
+  return val !== null ? parseFloat(val) || 0 : 0;
+}
+
+function setDayLimit(val, year, month) {
+  const key = DAYLIMIT_KEY + '_' + year + '-' + String(month + 1).padStart(2, '0');
+  localStorage.setItem(key, val.toString());
+}
+
+function autoCalcShares() {
+  const volumeUSD = parseFloat(document.getElementById('trade-volume-usd').value) || 0;
+  const cost = parseFloat(document.getElementById('trade-cost').value) || 0;
+  const sharesField = document.getElementById('trade-volume');
+  const label = document.getElementById('shares-auto-label');
+  if (volumeUSD > 0 && cost > 0 && label.textContent === 'AUTO') {
+    sharesField.value = Math.round(volumeUSD / cost);
+  }
 }
 
 function generateId() {
@@ -1184,38 +1336,52 @@ function totalComm(trade) {
   return (trade.commBuy || 0) + (trade.commSell || 0);
 }
 
+function tradeSize(trade) {
+  return trade.volumeUSD || (trade.cost * trade.volume) || 0;
+}
+
 function calcTradePnL(trade) {
-  return (trade.sell - trade.cost) * trade.contracts - totalComm(trade);
+  return (trade.sell - trade.cost) * trade.volume - totalComm(trade);
 }
 
 function calcTradePnLPct(trade) {
-  const invested = trade.cost * trade.contracts + (trade.commBuy || 0);
+  const invested = trade.cost * trade.volume + (trade.commBuy || 0);
   if (invested === 0) return 0;
   return (calcTradePnL(trade) / invested) * 100;
 }
 
 function calcRR(trade) {
-  const invested = trade.cost * trade.contracts + (trade.commBuy || 0);
+  const invested = trade.cost * trade.volume + (trade.commBuy || 0);
   if (invested === 0) return 0;
   return calcTradePnL(trade) / invested;
+}
+
+function calcDurationMin(trade) {
+  if (!trade.buyTime || !trade.sellTime) return null;
+  const [bh, bm] = trade.buyTime.split(':').map(Number);
+  const [sh, sm] = trade.sellTime.split(':').map(Number);
+  let mins = (sh * 60 + sm) - (bh * 60 + bm);
+  if (mins < 0) mins += 24 * 60;
+  return mins;
 }
 
 function calcStats(trades) {
   if (trades.length === 0) return {
     totalPnL: 0, numTrades: 0, winRate: 0, avgWin: 0, avgLoss: 0,
     profitFactor: 0, avgRR: 0, maxWinStreak: 0, maxLossStreak: 0,
-    bestAsset: '-', bestAssetPnL: 0, assetPnL: {}
+    bestAsset: '-', bestAssetPnL: 0, assetPnL: {}, totalSize: 0, avgSize: 0
   };
 
   let totalPnL = 0, wins = 0, losses = 0, totalWin = 0, totalLoss = 0;
   let winStreak = 0, lossStreak = 0, maxWin = 0, maxLoss = 0;
-  let rrSum = 0;
+  let rrSum = 0, totalSize = 0;
   const assetPnL = {};
 
   trades.forEach(t => {
     const pnl = calcTradePnL(t);
     totalPnL += pnl;
     rrSum += calcRR(t);
+    totalSize += tradeSize(t);
 
     if (!assetPnL[t.ticker]) assetPnL[t.ticker] = { pnl: 0, count: 0 };
     assetPnL[t.ticker].pnl += pnl;
@@ -1242,7 +1408,8 @@ function calcStats(trades) {
     maxWinStreak: maxWin, maxLossStreak: maxLoss,
     bestAsset: bestAssetEntry ? bestAssetEntry[0] : '-',
     bestAssetPnL: bestAssetEntry ? bestAssetEntry[1].pnl : 0,
-    assetPnL
+    assetPnL, totalSize,
+    avgSize: trades.length > 0 ? totalSize / trades.length : 0
   };
 }
 
@@ -1259,6 +1426,7 @@ function switchPage(page) {
   else if (page === 'trades') refreshTrades();
   else if (page === 'calendar') refreshCalendar();
   else if (page === 'performance') refreshPerformance();
+
 }
 
 function updateSlideIndicator() {
@@ -1273,17 +1441,28 @@ function updateSlideIndicator() {
 }
 
 // ==================== CAPITAL ====================
-function openCapitalModal() {
-  document.getElementById('capital-input').value = getCapital() || '';
+function openCapitalModal(year, month) {
+  const y = year !== undefined ? year : new Date().getFullYear();
+  const m = month !== undefined ? month : new Date().getMonth();
+  document.getElementById('capital-modal-year').value = y;
+  document.getElementById('capital-modal-month').value = m;
+  document.getElementById('capital-modal-title').textContent =
+    'Capital Inicial — ' + MONTH_NAMES[m] + ' ' + y;
+  document.getElementById('capital-input').value = getCapital(y, m) || '';
+  document.getElementById('daylimit-input').value = getDayLimit(y, m) || '';
   document.getElementById('capital-modal').classList.add('open');
 }
 function closeCapitalModal() { document.getElementById('capital-modal').classList.remove('open'); }
 function saveCapital() {
   const val = parseFloat(document.getElementById('capital-input').value) || 0;
-  setCapital(val);
+  const limit = parseFloat(document.getElementById('daylimit-input').value) || 0;
+  const y = parseInt(document.getElementById('capital-modal-year').value);
+  const m = parseInt(document.getElementById('capital-modal-month').value);
+  setCapital(val, y, m);
+  setDayLimit(limit, y, m);
   closeCapitalModal();
   refreshDashboard();
-  showToast('Capital actualizado');
+  showToast('Configuración de ' + MONTH_NAMES[m] + ' actualizada');
 }
 
 // ==================== DASHBOARD ====================
@@ -1291,8 +1470,12 @@ let balanceChart = null;
 
 function refreshDashboard() {
   const year = parseInt(document.getElementById('dash-year').value);
-  const trades = loadTrades().filter(t => new Date(t.date).getFullYear() === year);
-  const capital = getCapital();
+  const month = parseInt(document.getElementById('dash-month').value);
+  const trades = loadTrades().filter(t => {
+    const d = new Date(t.date + 'T12:00:00');
+    return d.getFullYear() === year && d.getMonth() === month;
+  });
+  const capital = getCapital(year, month);
   const stats = calcStats(trades);
 
   document.getElementById('capital-display-value').textContent = '$' + fmt(capital);
@@ -1301,9 +1484,9 @@ function refreshDashboard() {
   const roi = capital > 0 ? (stats.totalPnL / capital) * 100 : 0;
 
   const statsHTML = [
-    { label: 'P&L Total', value: fmtUSD(stats.totalPnL), cls: stats.totalPnL >= 0 ? 'positive' : 'negative', color: pnlClass(stats.totalPnL), sub: `${stats.numTrades} operativas` },
-    { label: 'Balance Actual', value: '$' + fmt(balance), cls: 'neutral', color: '', sub: '' },
-    { label: 'ROI Anual', value: fmtPct(roi), cls: roi >= 0 ? 'positive' : 'negative', color: pnlClass(roi), sub: '' },
+    { label: 'P&L ' + MONTH_SHORT[month], value: fmtUSD(stats.totalPnL), cls: stats.totalPnL >= 0 ? 'positive' : 'negative', color: pnlClass(stats.totalPnL), sub: `${stats.numTrades} operativas` },
+    { label: 'Balance del Mes', value: '$' + fmt(balance), cls: 'neutral', color: '', sub: '' },
+    { label: 'ROI del Mes', value: fmtPct(roi), cls: roi >= 0 ? 'positive' : 'negative', color: pnlClass(roi), sub: '' },
     { label: 'Profit Factor', value: stats.profitFactor === Infinity ? '∞' : fmt(stats.profitFactor), cls: stats.profitFactor >= 1 ? 'positive' : 'negative', color: '', sub: '' },
     { label: 'Win Rate', value: fmt(stats.winRate) + '%', cls: stats.winRate >= 50 ? 'positive' : 'negative', color: '', sub: '' },
     { label: 'Promedio Ganancia', value: fmtUSD(stats.avgWin), cls: 'positive', color: 'green', sub: '' },
@@ -1353,10 +1536,41 @@ function refreshDashboard() {
       </div>
     `).join('');
 
-  renderBalanceChart(trades, capital, year);
+  renderDailySizeGrid(trades, year, month);
+  renderBalanceChart(trades, capital, year, month);
 }
 
-function renderBalanceChart(trades, capital, year) {
+function renderDailySizeGrid(trades, year, month) {
+  const limit = getDayLimit(year, month);
+  document.getElementById('daylimit-label').textContent = limit > 0 ? `Límite diario: $${fmt(limit)}` : 'Sin límite diario configurado';
+
+  const dayMap = {};
+  trades.forEach(t => {
+    if (!dayMap[t.date]) dayMap[t.date] = 0;
+    dayMap[t.date] += tradeSize(t);
+  });
+
+  const sortedDays = Object.entries(dayMap).sort((a, b) => a[0].localeCompare(b[0]));
+  const grid = document.getElementById('daily-size-grid');
+
+  if (sortedDays.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:24px;">Sin operativas este mes</div>';
+    return;
+  }
+
+  const maxSize = Math.max(...sortedDays.map(([, size]) => size), limit, 1);
+
+  grid.innerHTML = sortedDays.map(([date, size]) => {
+    const over = limit > 0 && size > limit;
+    return `<div class="daily-size-row">
+      <div class="daily-size-date">${date.slice(5)}</div>
+      <div class="daily-size-bar"><div class="daily-size-bar-fill${over ? ' over-limit' : ''}" style="width:${(size / maxSize) * 100}%;"></div></div>
+      <div class="daily-size-value">$${fmt(size)}${over ? `<span class="daily-size-alert">⚡ SUPERA LÍMITE</span>` : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderBalanceChart(trades, capital, year, month) {
   const sorted = [...trades].sort((a, b) => a.date.localeCompare(b.date));
   let balance = capital;
   const labels = ['Inicio'];
@@ -1372,7 +1586,7 @@ function renderBalanceChart(trades, capital, year) {
   const ctx = document.getElementById('chart-balance').getContext('2d');
   const gradient = ctx.createLinearGradient(0, 0, 0, 300);
   const lastVal = data[data.length - 1];
-  const color = lastVal >= capital ? '#00d4aa' : '#ff4757';
+  const color = lastVal >= capital ? '#0ea472' : '#e5484d';
   gradient.addColorStop(0, color + '30');
   gradient.addColorStop(1, color + '00');
 
@@ -1381,10 +1595,10 @@ function renderBalanceChart(trades, capital, year) {
     data: { labels, datasets: [{ data, borderColor: color, backgroundColor: gradient, fill: true, tension: 0.3, pointRadius: 2, pointHoverRadius: 5, borderWidth: 2 }] },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1a25', borderColor: '#2a2a3e', borderWidth: 1, titleFont: { family: 'Inter' }, bodyFont: { family: 'JetBrains Mono', size: 13 }, callbacks: { label: ctx => '$' + fmt(ctx.parsed.y) } } },
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#20202b', borderColor: '#33334a', borderWidth: 1, titleFont: { family: 'Inter' }, bodyFont: { family: 'JetBrains Mono', size: 13 }, callbacks: { label: ctx => '$' + fmt(ctx.parsed.y) } } },
       scales: {
-        x: { grid: { color: '#1e1e2e' }, ticks: { color: '#7a7a8e', font: { size: 10 }, maxTicksLimit: 12 } },
-        y: { grid: { color: '#1e1e2e' }, ticks: { color: '#7a7a8e', font: { family: 'JetBrains Mono', size: 11 }, callback: v => '$' + v.toLocaleString() } }
+        x: { grid: { color: '#e7e7ee' }, ticks: { color: '#7a7a8e', font: { size: 10 }, maxTicksLimit: 12 } },
+        y: { grid: { color: '#e7e7ee' }, ticks: { color: '#7a7a8e', font: { family: 'JetBrains Mono', size: 11 }, callback: v => '$' + v.toLocaleString() } }
       },
       interaction: { intersect: false, mode: 'index' }
     }
@@ -1400,6 +1614,7 @@ function refreshTrades() {
     .filter(t => { const d = new Date(t.date); return d.getMonth() === month && d.getFullYear() === year; })
     .sort((a, b) => b.date.localeCompare(a.date));
 
+  const capital = getCapital(year, month);
   const stats = calcStats(trades);
 
   const statsHTML = [
@@ -1409,6 +1624,7 @@ function refreshTrades() {
     { label: 'R:R Promedio', value: fmt(stats.avgRR) + 'R', cls: stats.avgRR >= 1 ? 'positive' : 'negative', color: '' },
     { label: 'Mejor Activo', value: stats.bestAsset, cls: 'positive', color: '' },
     { label: 'Profit Factor', value: stats.profitFactor === Infinity ? '∞' : fmt(stats.profitFactor), cls: stats.profitFactor >= 1 ? 'positive' : 'negative', color: '' },
+    { label: 'Tamaño Promedio', value: '$' + fmt(stats.avgSize), cls: 'neutral', color: '' },
     { label: 'Racha Máxima', value: `${stats.maxWinStreak}W / ${stats.maxLossStreak}L`, cls: 'neutral', color: '' },
   ];
 
@@ -1421,31 +1637,39 @@ function refreshTrades() {
 
   const tbody = document.getElementById('trades-tbody');
   if (trades.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;color:var(--text-muted);padding:32px;">Sin operativas este mes</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="20" style="text-align:center;color:var(--text-muted);padding:32px;">Sin operativas este mes</td></tr>';
     return;
   }
 
   tbody.innerHTML = trades.map((t, i) => {
     const pnl = calcTradePnL(t);
     const pnlPct = calcTradePnLPct(t);
+    const pnlPctAccount = capital > 0 ? (pnl / capital) * 100 : null;
     const rr = calcRR(t);
     const comm = totalComm(t);
-    const strat = t.strategy || 'DAY';
-    const stratLabel = strat === 'SWING' ? 'Swing' : 'Day';
+    const duration = calcDurationMin(t);
+    const sentiment = t.sentiment !== undefined ? t.sentiment : 5;
+    const sentimentColor = sentiment >= 7 ? 'green' : sentiment <= 3 ? 'red' : '';
     return `<tr>
       <td style="color:var(--text-muted);">${trades.length - i}</td>
       <td>${t.date}</td>
+      <td>${t.buyTime || '-'}</td>
+      <td>${t.sellTime || '-'}</td>
+      <td>${duration !== null ? duration : '-'}</td>
       <td style="font-weight:700;color:var(--text);">${t.ticker}</td>
-      <td><span class="badge badge-${t.type.toLowerCase()}">${t.type}</span></td>
-      <td><span class="badge badge-${strat.toLowerCase()}">${stratLabel}</span></td>
-      <td>${t.contracts}</td>
+      <td>$${fmt(tradeSize(t))}</td>
+      <td>${fmt(t.volume, 0)}</td>
+      <td style="color:var(--text-muted);">${t.marketVolume ? fmt(t.marketVolume, 0) : '-'}</td>
       <td>$${fmt(t.cost)}</td>
       <td>$${fmt(t.sell)}</td>
       <td style="color:var(--text-muted);">$${fmt(comm)}</td>
       <td class="${pnlClass(pnl)}" style="font-weight:700;">${fmtUSD(pnl)}</td>
       <td class="${pnlClass(pnlPct)}">${fmtPct(pnlPct)}</td>
+      <td class="${pnlPctAccount !== null ? pnlClass(pnlPctAccount) : ''}" title="P&L de la operativa sobre el capital inicial del mes">${pnlPctAccount !== null ? fmtPct(pnlPctAccount) : '-'}</td>
       <td>${fmt(rr)}R</td>
+      <td class="${sentimentColor}">${sentiment}/10</td>
       <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;font-family:Inter;font-size:11px;color:var(--text-muted);" title="${(t.notes||'').replace(/"/g,'&quot;')}">${t.notes||'-'}</td>
+      <td>${t.screenshot ? `<img src="${t.screenshot}" onclick="openScreenshotViewer('${t.id}')" style="width:32px;height:32px;object-fit:cover;border-radius:4px;cursor:pointer;border:1px solid var(--border);">` : '-'}</td>
       <td>
         <div style="display:flex;gap:4px;">
           <button class="btn btn-sm btn-icon" onclick="editTrade('${t.id}')" title="Editar">&#9998;</button>
@@ -1456,30 +1680,74 @@ function refreshTrades() {
   }).join('');
 }
 
+function openScreenshotViewer(id) {
+  const trade = loadTrades().find(t => t.id === id);
+  if (!trade || !trade.screenshot) return;
+  const win = window.open('');
+  win.document.write(`<title>${trade.ticker} — ${trade.date}</title><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="${trade.screenshot}" style="max-width:100%;max-height:100vh;"></body>`);
+}
+
 // ==================== TRADE MODAL ====================
+function updateSentimentLabel(val) {
+  document.getElementById('sentiment-label').textContent = val + ' · ' + SENTIMENT_LABELS[val];
+}
+
+function handleScreenshotUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => {
+    document.getElementById('trade-screenshot').value = evt.target.result;
+    document.getElementById('screenshot-preview').src = evt.target.result;
+    document.getElementById('screenshot-preview-wrap').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeScreenshot() {
+  document.getElementById('trade-screenshot').value = '';
+  document.getElementById('trade-screenshot-input').value = '';
+  document.getElementById('screenshot-preview-wrap').style.display = 'none';
+}
+
 function openTradeModal(tradeId) {
   const form = document.getElementById('trade-form');
   form.reset();
+  removeScreenshot();
+  document.getElementById('shares-auto-label').textContent = 'AUTO';
   if (tradeId) {
     const trade = loadTrades().find(t => t.id === tradeId);
     if (trade) {
       document.getElementById('trade-modal-title').textContent = 'Editar Operativa';
       document.getElementById('trade-id').value = trade.id;
       document.getElementById('trade-date').value = trade.date;
+      document.getElementById('trade-buy-time').value = trade.buyTime || '';
+      document.getElementById('trade-sell-time').value = trade.sellTime || '';
       document.getElementById('trade-ticker').value = trade.ticker;
-      document.getElementById('trade-type').value = trade.type;
-      document.getElementById('trade-contracts').value = trade.contracts;
+      document.getElementById('trade-volume-usd').value = tradeSize(trade);
       document.getElementById('trade-cost').value = trade.cost;
       document.getElementById('trade-sell').value = trade.sell;
+      document.getElementById('shares-auto-label').textContent = 'MANUAL';
+      document.getElementById('trade-volume').value = trade.volume;
+      document.getElementById('trade-market-volume').value = trade.marketVolume || '';
       document.getElementById('trade-comm-buy').value = trade.commBuy || 0;
       document.getElementById('trade-comm-sell').value = trade.commSell || 0;
-      document.getElementById('trade-strategy').value = trade.strategy || 'DAY';
+      const sentiment = trade.sentiment !== undefined ? trade.sentiment : 5;
+      document.getElementById('trade-sentiment').value = sentiment;
+      updateSentimentLabel(sentiment);
       document.getElementById('trade-notes').value = trade.notes || '';
+      if (trade.screenshot) {
+        document.getElementById('trade-screenshot').value = trade.screenshot;
+        document.getElementById('screenshot-preview').src = trade.screenshot;
+        document.getElementById('screenshot-preview-wrap').style.display = 'block';
+      }
     }
   } else {
     document.getElementById('trade-modal-title').textContent = 'Nueva Operativa';
     document.getElementById('trade-id').value = '';
     document.getElementById('trade-date').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('trade-sentiment').value = 5;
+    updateSentimentLabel(5);
   }
   document.getElementById('trade-modal').classList.add('open');
 }
@@ -1500,15 +1768,19 @@ function saveTrade(e) {
   const trade = {
     id: id || generateId(),
     date: document.getElementById('trade-date').value,
+    buyTime: document.getElementById('trade-buy-time').value,
+    sellTime: document.getElementById('trade-sell-time').value,
     ticker: document.getElementById('trade-ticker').value.toUpperCase().trim(),
-    type: document.getElementById('trade-type').value,
-    contracts: parseInt(document.getElementById('trade-contracts').value),
+    volumeUSD: parseFloat(document.getElementById('trade-volume-usd').value) || 0,
     cost: parseFloat(document.getElementById('trade-cost').value),
     sell: parseFloat(document.getElementById('trade-sell').value),
+    volume: parseInt(document.getElementById('trade-volume').value) || 0,
+    marketVolume: parseInt(document.getElementById('trade-market-volume').value) || 0,
     commBuy: parseFloat(document.getElementById('trade-comm-buy').value) || 0,
     commSell: parseFloat(document.getElementById('trade-comm-sell').value) || 0,
-    strategy: document.getElementById('trade-strategy').value,
+    sentiment: parseInt(document.getElementById('trade-sentiment').value),
     notes: document.getElementById('trade-notes').value.trim(),
+    screenshot: document.getElementById('trade-screenshot').value || '',
   };
   let trades = loadTrades();
   if (id) { trades = trades.map(t => t.id === id ? trade : t); }
@@ -1721,7 +1993,7 @@ function renderMonthlyChart(monthlyData) {
   if (monthlyPnlChart) monthlyPnlChart.destroy();
   const ctx = document.getElementById('chart-monthly-pnl').getContext('2d');
 
-  const colors = monthlyData.map(m => m.pnl >= 0 ? '#00d4aa' : '#ff4757');
+  const colors = monthlyData.map(m => m.pnl >= 0 ? '#0ea472' : '#e5484d');
 
   monthlyPnlChart = new Chart(ctx, {
     type: 'bar',
@@ -1740,7 +2012,7 @@ function renderMonthlyChart(monthlyData) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: '#1a1a25', borderColor: '#2a2a3e', borderWidth: 1,
+          backgroundColor: '#20202b', borderColor: '#33334a', borderWidth: 1,
           titleFont: { family: 'Inter' }, bodyFont: { family: 'JetBrains Mono', size: 13 },
           callbacks: { label: ctx => fmtUSD(ctx.parsed.y) }
         }
@@ -1748,7 +2020,7 @@ function renderMonthlyChart(monthlyData) {
       scales: {
         x: { grid: { display: false }, ticks: { color: '#7a7a8e', font: { size: 11, weight: 600 } } },
         y: {
-          grid: { color: '#1e1e2e' },
+          grid: { color: '#e7e7ee' },
           ticks: { color: '#7a7a8e', font: { family: 'JetBrains Mono', size: 11 }, callback: v => '$' + v.toLocaleString() }
         }
       }
@@ -1759,20 +2031,23 @@ function renderMonthlyChart(monthlyData) {
 // ==================== IMPORT ====================
 let importedRows = [];
 let importHeaders = [];
-let colMapping = { date: -1, ticker: -1, type: -1, contracts: -1, cost: -1, sell: -1, commBuy: -1, commSell: -1, strategy: -1, notes: -1 };
+let colMapping = { date: -1, buyTime: -1, sellTime: -1, ticker: -1, volumeUSD: -1, volume: -1, marketVolume: -1, cost: -1, sell: -1, commBuy: -1, commSell: -1, sentiment: -1, notes: -1 };
 
-const FIELD_LABELS = { date: 'Fecha', ticker: 'Ticker', type: 'Tipo', contracts: 'Contratos', cost: 'Costo', sell: 'Venta', commBuy: 'Comisión Compra', commSell: 'Comisión Venta', strategy: 'Estrategia', notes: 'Notas' };
+const FIELD_LABELS = { date: 'Fecha', buyTime: 'Hora Compra', sellTime: 'Hora Venta', ticker: 'Ticker', volumeUSD: 'Volumen de Compra ($)', volume: '# Acciones', marketVolume: 'Volumen de Mercado', cost: 'Precio Compra', sell: 'Precio Venta', commBuy: 'Comisión Compra', commSell: 'Comisión Venta', sentiment: 'Sentimiento', notes: 'Notas' };
 
 const HEADER_HINTS = {
   date: ['fecha','date','buy date','fecha de compra','entry date','trade date','open date'],
+  buyTime: ['hora de compra','hora compra','buy time','entry time'],
+  sellTime: ['hora de venta','hora venta','sell time','exit time'],
   ticker: ['ticker','symbol','activo','stock','asset','empresa','underlying'],
-  type: ['tipo','type','option type','call/put','call put','option','tipo de opcion','tipo opcion'],
-  contracts: ['contratos','contracts','qty','quantity','cantidad','# contratos','num contracts','lots','size'],
-  cost: ['costo','cost','buy price','precio compra','entry price','costo contrato','costo/contrato','price','premium','entry'],
-  sell: ['venta','sell','sell price','precio venta','exit price','venta contrato','venta/contrato','close','exit','sale'],
+  volumeUSD: ['volumen de compra','volumen de compra ($)','dollar volume','usd volume','tamaño','size','invested','monto invertido'],
+  volume: ['# acciones','acciones','shares','share qty','cantidad de acciones','qty','quantity'],
+  marketVolume: ['volumen de mercado','volumen mercado','market volume','avg volume','relative volume','liquidez'],
+  cost: ['costo','cost','buy price','precio compra','precio de compra','entry price','price','entry'],
+  sell: ['venta','sell','sell price','precio venta','precio de venta','exit price','close','exit','sale'],
   commBuy: ['comision compra','commission buy','buy commission','buy fee','fee buy','comision entrada'],
   commSell: ['comision venta','commission sell','sell commission','sell fee','fee sell','comision salida'],
-  strategy: ['estrategia','strategy','trade type','tipo operativa','day/swing'],
+  sentiment: ['sentimiento','nps','sentiment','mood'],
   notes: ['notas','notes','comentarios','comments','observaciones']
 };
 
@@ -1876,8 +2151,9 @@ function showImportStep2(filename) {
   const mapGrid = document.getElementById('col-map-grid');
   const options = importHeaders.map((h, i) => `<option value="${i}">${h}</option>`).join('');
 
+  const OPTIONAL_FIELDS = ['buyTime', 'sellTime', 'volume', 'marketVolume', 'sentiment', 'notes'];
   mapGrid.innerHTML = Object.entries(FIELD_LABELS).map(([field, label]) => {
-    const required = field !== 'notes' ? ' *' : '';
+    const required = OPTIONAL_FIELDS.includes(field) ? '' : ' *';
     return `<div class="form-group" style="margin-bottom:8px;">
       <label class="form-label" style="font-size:10px;">${label}${required}</label>
       <select class="form-input" style="font-size:12px;padding:6px 10px;" onchange="colMapping.${field}=parseInt(this.value)" id="map-${field}">
@@ -1901,7 +2177,7 @@ function showImportStep2(filename) {
 }
 
 function confirmImport() {
-  const required = ['date', 'ticker', 'contracts', 'cost', 'sell'];
+  const required = ['date', 'ticker', 'volumeUSD', 'cost', 'sell'];
   for (const f of required) {
     const sel = document.getElementById('map-' + f);
     if (sel) colMapping[f] = parseInt(sel.value);
@@ -1911,7 +2187,7 @@ function confirmImport() {
     }
   }
   // Read optional field mappings
-  ['type','commBuy','commSell','strategy','notes'].forEach(f => {
+  ['buyTime','sellTime','volume','marketVolume','commBuy','commSell','sentiment','notes'].forEach(f => {
     const sel = document.getElementById('map-' + f);
     if (sel) colMapping[f] = parseInt(sel.value);
   });
@@ -1929,28 +2205,22 @@ function confirmImport() {
       const ticker = (row[colMapping.ticker] || '').toString().toUpperCase().trim();
       if (!ticker) { errors++; return; }
 
-      let type = 'CALL';
-      if (colMapping.type >= 0) {
-        const rawType = (row[colMapping.type] || '').toString().toUpperCase().trim();
-        if (rawType.includes('PUT') || rawType === 'P') type = 'PUT';
-      }
+      const buyTime = colMapping.buyTime >= 0 ? (row[colMapping.buyTime] || '').toString().trim() : '';
+      const sellTime = colMapping.sellTime >= 0 ? (row[colMapping.sellTime] || '').toString().trim() : '';
 
-      let strategy = 'DAY';
-      if (colMapping.strategy >= 0) {
-        const rawStrat = (row[colMapping.strategy] || '').toString().toUpperCase().trim();
-        if (rawStrat.includes('SWING') || rawStrat === 'S') strategy = 'SWING';
-      }
-
-      const contracts = parseInt(row[colMapping.contracts]) || 1;
+      const volumeUSD = parseFloat(row[colMapping.volumeUSD]) || 0;
       const cost = parseFloat(row[colMapping.cost]) || 0;
       const sell = parseFloat(row[colMapping.sell]) || 0;
+      const volume = colMapping.volume >= 0 ? (parseInt(row[colMapping.volume]) || 0) : (cost > 0 ? Math.round(volumeUSD / cost) : 0);
+      const marketVolume = colMapping.marketVolume >= 0 ? (parseInt(row[colMapping.marketVolume]) || 0) : 0;
       const commBuy = colMapping.commBuy >= 0 ? (parseFloat(row[colMapping.commBuy]) || 0) : 0;
       const commSell = colMapping.commSell >= 0 ? (parseFloat(row[colMapping.commSell]) || 0) : 0;
+      const sentiment = colMapping.sentiment >= 0 ? (parseInt(row[colMapping.sentiment]) || 5) : 5;
       const notes = colMapping.notes >= 0 ? (row[colMapping.notes] || '').toString().trim() : '';
 
       existing.push({
         id: generateId(),
-        date, ticker, type, strategy, contracts, cost, sell, commBuy, commSell, notes
+        date, buyTime, sellTime, ticker, volumeUSD, volume, marketVolume, cost, sell, commBuy, commSell, sentiment, notes, screenshot: ''
       });
       imported++;
     } catch { errors++; }
@@ -2018,15 +2288,22 @@ function exportToCSV() {
   const trades = loadTrades().sort((a, b) => a.date.localeCompare(b.date));
   if (trades.length === 0) { showToast('No hay operativas para exportar'); return; }
 
-  const headers = ['Fecha','Ticker','Tipo','Estrategia','Contratos','Costo/Contrato','Venta/Contrato','Comision Compra','Comision Venta','P&L ($)','P&L (%)','R:R','Notas'];
-  const rows = trades.map(t => [
-    t.date, t.ticker, t.type, t.strategy || 'DAY', t.contracts, t.cost, t.sell,
-    (t.commBuy || 0).toFixed(2), (t.commSell || 0).toFixed(2),
-    calcTradePnL(t).toFixed(2), calcTradePnLPct(t).toFixed(2), calcRR(t).toFixed(2), `"${(t.notes || '').replace(/"/g, '""')}"`
-  ]);
+  const headers = ['Fecha','Hora Compra','Hora Venta','Duracion (min)','Ticker','Volumen de Compra ($)','# Acciones','Volumen de Mercado','Precio Compra','Precio Venta','Comision Compra','Comision Venta','P&L ($)','P&L (%) Operativa','% sobre Cuenta','R:R','Sentimiento','Notas'];
+  const rows = trades.map(t => {
+    const d = new Date(t.date + 'T12:00:00');
+    const capital = getCapital(d.getFullYear(), d.getMonth());
+    const pnl = calcTradePnL(t);
+    const pctAccount = capital > 0 ? (pnl / capital) * 100 : '';
+    return [
+      t.date, t.buyTime || '', t.sellTime || '', calcDurationMin(t) ?? '', t.ticker, tradeSize(t).toFixed(2), t.volume, t.marketVolume || '', t.cost, t.sell,
+      (t.commBuy || 0).toFixed(2), (t.commSell || 0).toFixed(2),
+      pnl.toFixed(2), calcTradePnLPct(t).toFixed(2), pctAccount !== '' ? pctAccount.toFixed(2) : '', calcRR(t).toFixed(2),
+      t.sentiment !== undefined ? t.sentiment : 5, `"${(t.notes || '').replace(/"/g, '""')}"`
+    ];
+  });
 
   const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-  downloadFile(csv, 'trading_logbook.csv', 'text/csv');
+  downloadFile(csv, 'small_caps_logbook.csv', 'text/csv');
   showToast('CSV exportado');
 }
 
@@ -2047,32 +2324,43 @@ function exportToExcel() {
   <Row><Cell ss:StyleID="header"><Data ss:Type="String">Capital Inicial</Data></Cell><Cell><Data ss:Type="Number">${capital}</Data></Cell></Row>
   <Row></Row>
   <Row ss:StyleID="header">
-    <Cell><Data ss:Type="String">Fecha</Data></Cell><Cell><Data ss:Type="String">Ticker</Data></Cell>
-    <Cell><Data ss:Type="String">Tipo</Data></Cell><Cell><Data ss:Type="String">Estrategia</Data></Cell>
-    <Cell><Data ss:Type="String">Contratos</Data></Cell>
-    <Cell><Data ss:Type="String">Costo/Contrato</Data></Cell><Cell><Data ss:Type="String">Venta/Contrato</Data></Cell>
+    <Cell><Data ss:Type="String">Fecha</Data></Cell><Cell><Data ss:Type="String">Hora Compra</Data></Cell><Cell><Data ss:Type="String">Hora Venta</Data></Cell>
+    <Cell><Data ss:Type="String">Duraci&amp;oacute;n (min)</Data></Cell><Cell><Data ss:Type="String">Ticker</Data></Cell>
+    <Cell><Data ss:Type="String">Volumen de Compra ($)</Data></Cell>
+    <Cell><Data ss:Type="String"># Acciones</Data></Cell>
+    <Cell><Data ss:Type="String">Volumen de Mercado</Data></Cell>
+    <Cell><Data ss:Type="String">Precio Compra</Data></Cell><Cell><Data ss:Type="String">Precio Venta</Data></Cell>
     <Cell><Data ss:Type="String">Comisi&amp;oacute;n Compra</Data></Cell><Cell><Data ss:Type="String">Comisi&amp;oacute;n Venta</Data></Cell>
-    <Cell><Data ss:Type="String">P&amp;L ($)</Data></Cell><Cell><Data ss:Type="String">P&amp;L (%)</Data></Cell>
-    <Cell><Data ss:Type="String">R:R</Data></Cell><Cell><Data ss:Type="String">Notas</Data></Cell>
+    <Cell><Data ss:Type="String">P&amp;L ($)</Data></Cell><Cell><Data ss:Type="String">P&amp;L (%) Operativa</Data></Cell>
+    <Cell><Data ss:Type="String">% sobre Cuenta</Data></Cell>
+    <Cell><Data ss:Type="String">R:R</Data></Cell><Cell><Data ss:Type="String">Sentimiento</Data></Cell><Cell><Data ss:Type="String">Notas</Data></Cell>
   </Row>`;
 
   trades.forEach(t => {
     const pnl = calcTradePnL(t);
+    const duration = calcDurationMin(t);
+    const d = new Date(t.date + 'T12:00:00');
+    const monthCapital = getCapital(d.getFullYear(), d.getMonth());
+    const pctAccount = monthCapital > 0 ? (pnl / monthCapital) * 100 : 0;
     xml += `<Row>
-    <Cell><Data ss:Type="String">${t.date}</Data></Cell><Cell><Data ss:Type="String">${t.ticker}</Data></Cell>
-    <Cell><Data ss:Type="String">${t.type}</Data></Cell><Cell><Data ss:Type="String">${t.strategy || 'DAY'}</Data></Cell>
-    <Cell><Data ss:Type="Number">${t.contracts}</Data></Cell>
+    <Cell><Data ss:Type="String">${t.date}</Data></Cell><Cell><Data ss:Type="String">${t.buyTime || ''}</Data></Cell><Cell><Data ss:Type="String">${t.sellTime || ''}</Data></Cell>
+    <Cell><Data ss:Type="Number">${duration !== null ? duration : 0}</Data></Cell><Cell><Data ss:Type="String">${t.ticker}</Data></Cell>
+    <Cell><Data ss:Type="Number">${tradeSize(t).toFixed(2)}</Data></Cell>
+    <Cell><Data ss:Type="Number">${t.volume}</Data></Cell>
+    <Cell><Data ss:Type="Number">${t.marketVolume || 0}</Data></Cell>
     <Cell><Data ss:Type="Number">${t.cost}</Data></Cell><Cell><Data ss:Type="Number">${t.sell}</Data></Cell>
     <Cell><Data ss:Type="Number">${(t.commBuy || 0).toFixed(2)}</Data></Cell><Cell><Data ss:Type="Number">${(t.commSell || 0).toFixed(2)}</Data></Cell>
     <Cell ss:StyleID="${pnl >= 0 ? 'green' : 'red'}"><Data ss:Type="Number">${pnl.toFixed(2)}</Data></Cell>
     <Cell ss:StyleID="${calcTradePnLPct(t) >= 0 ? 'green' : 'red'}"><Data ss:Type="Number">${calcTradePnLPct(t).toFixed(2)}</Data></Cell>
+    <Cell ss:StyleID="${pctAccount >= 0 ? 'green' : 'red'}"><Data ss:Type="Number">${pctAccount.toFixed(2)}</Data></Cell>
     <Cell><Data ss:Type="Number">${calcRR(t).toFixed(2)}</Data></Cell>
+    <Cell><Data ss:Type="Number">${t.sentiment !== undefined ? t.sentiment : 5}</Data></Cell>
     <Cell><Data ss:Type="String">${(t.notes || '').replace(/&/g,'&amp;').replace(/</g,'&lt;')}</Data></Cell>
   </Row>`;
   });
 
   xml += `</Table></Worksheet></Workbook>`;
-  downloadFile(xml, 'trading_logbook.xls', 'application/vnd.ms-excel');
+  downloadFile(xml, 'small_caps_logbook.xls', 'application/vnd.ms-excel');
   showToast('Excel exportado');
 }
 
@@ -2097,6 +2385,7 @@ function showToast(msg, isError) {
 function populateYearSelectors() {
   const years = [];
   const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
   for (let y = currentYear - 3; y <= currentYear + 1; y++) years.push(y);
 
   ['dash-year', 'trades-year', 'perf-year'].forEach(id => {
@@ -2104,14 +2393,14 @@ function populateYearSelectors() {
     if (sel) sel.innerHTML = years.map(y => `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`).join('');
   });
 
-  const mSel = document.getElementById('trades-month');
-  if (mSel) {
-    const currentMonth = new Date().getMonth();
-    mSel.innerHTML = MONTH_NAMES.map((m, i) => `<option value="${i}" ${i === currentMonth ? 'selected' : ''}>${m}</option>`).join('');
-  }
+  ['trades-month', 'dash-month'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (sel) sel.innerHTML = MONTH_NAMES.map((m, i) => `<option value="${i}" ${i === currentMonth ? 'selected' : ''}>${m}</option>`).join('');
+  });
 }
 
 function init() {
+  seedFromHTML();
   populateYearSelectors();
   initCalendar();
   refreshDashboard();
