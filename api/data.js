@@ -1,16 +1,6 @@
 const STORAGE_KEY = 'smallcaps:data';
 
-function getToken(req) {
-  const header = req.headers.authorization || '';
-  return header.startsWith('Bearer ') ? header.slice(7) : '';
-}
-
 module.exports = async (req, res) => {
-  const expected = process.env.APP_PASSWORD;
-  if (!expected || getToken(req) !== expected) {
-    return res.status(401).json({ error: 'unauthorized' });
-  }
-
   const KV_URL = process.env.KV_REST_API_URL;
   const KV_TOKEN = process.env.KV_REST_API_TOKEN;
   if (!KV_URL || !KV_TOKEN) {

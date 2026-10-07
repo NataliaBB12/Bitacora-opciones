@@ -407,52 +407,6 @@ textarea.form-input { resize: vertical; min-height: 60px; }
   border-top: 1px solid var(--border);
 }
 
-.login-gate {
-  position: fixed;
-  inset: 0;
-  z-index: 3000;
-  background: var(--bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.login-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 32px;
-  width: 100%;
-  max-width: 360px;
-  box-shadow: var(--shadow);
-  text-align: center;
-}
-
-.login-title {
-  font-size: 20px;
-  font-weight: 800;
-  margin-bottom: 6px;
-}
-
-.login-sub {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 20px;
-}
-
-.login-card .form-input {
-  margin-bottom: 12px;
-  text-align: center;
-}
-
-.login-error {
-  color: var(--red);
-  font-size: 12px;
-  min-height: 16px;
-  margin-bottom: 8px;
-}
-
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
 
@@ -888,18 +842,7 @@ textarea.form-input { resize: vertical; min-height: 60px; }
 </head>
 <body>
 
-<!-- Login Gate -->
-<div class="login-gate" id="login-gate">
-  <form class="login-card" id="login-form" onsubmit="return handleLoginSubmit(event)">
-    <div class="login-title">🔒 Small Caps Log</div>
-    <div class="login-sub">Ingresa la contraseña para acceder a tu bitácora.</div>
-    <input type="password" class="form-input" id="login-password" placeholder="Contraseña" autocomplete="current-password" required>
-    <div class="login-error" id="login-error"></div>
-    <button type="submit" class="btn btn-primary" id="login-submit" style="width:100%;justify-content:center;">Entrar</button>
-  </form>
-</div>
-
-<div class="app" id="app-root" style="display:none;">
+<div class="app" id="app-root">
   <!-- Top Header -->
   <header class="top-header">
     <div class="header-inner">
@@ -943,9 +886,6 @@ textarea.form-input { resize: vertical; min-height: 60px; }
         <button class="header-btn" onclick="exportHTML()" style="color:var(--green);border-color:var(--green-border);">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
           Guardar en HTML
-        </button>
-        <button class="header-btn" onclick="logout()" title="Cerrar sesión">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </button>
       </div>
     </div>
@@ -2480,13 +2420,7 @@ document.querySelectorAll('.modal-overlay').forEach(el => {
   el.addEventListener('click', e => { if (e.target === el) { closeTradeModal(); closeCapitalModal(); closeImportModal(); } });
 });
 
-// ==================== AUTH + SERVER SYNC ====================
-const AUTH_KEY = 'sc_auth_token';
-
-function getAuthToken() { return localStorage.getItem(AUTH_KEY); }
-function setAuthToken(t) { localStorage.setItem(AUTH_KEY, t); }
-function clearAuthToken() { localStorage.removeItem(AUTH_KEY); }
-
+// ==================== SERVER SYNC ====================
 function collectPrefixed(prefix) {
   const out = {};
   for (let i = 0; i < localStorage.length; i++) {
@@ -2497,11 +2431,8 @@ function collectPrefixed(prefix) {
 }
 
 async function syncFromServer() {
-  const token = getAuthToken();
-  if (!token) return 'no-token';
   try {
-    const r = await fetch('/api/data', { headers: { Authorization: 'Bearer ' + token } });
-    if (r.status === 401) return 'unauthorized';
+    const r = await fetch('/api/data');
     if (!r.ok) return 'error';
     const j = await r.json();
     if (j.data) {
@@ -2517,14 +2448,12 @@ async function syncFromServer() {
 
 let syncPending = false, syncQueued = false;
 async function syncToServer() {
-  const token = getAuthToken();
-  if (!token) return;
   if (syncPending) { syncQueued = true; return; }
   syncPending = true;
   try {
     await fetch('/api/data', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         trades: loadTrades(),
         capital: collectPrefixed(CAPITAL_KEY),
@@ -2539,55 +2468,8 @@ async function syncToServer() {
   }
 }
 
-async function handleLoginSubmit(e) {
-  e.preventDefault();
-  const pw = document.getElementById('login-password').value;
-  const btn = document.getElementById('login-submit');
-  const err = document.getElementById('login-error');
-  err.textContent = '';
-  btn.disabled = true; btn.textContent = 'Verificando...';
-  try {
-    const r = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pw })
-    });
-    if (r.ok) {
-      setAuthToken(pw);
-      await boot();
-    } else {
-      err.textContent = 'Contraseña incorrecta.';
-    }
-  } catch (e) {
-    err.textContent = 'No se pudo conectar. Intenta de nuevo.';
-  }
-  btn.disabled = false; btn.textContent = 'Entrar';
-  return false;
-}
-
-function logout() {
-  if (!confirm('¿Cerrar sesión?')) return;
-  clearAuthToken();
-  document.getElementById('app-root').style.display = 'none';
-  document.getElementById('login-gate').style.display = 'flex';
-  document.getElementById('login-password').value = '';
-}
-
 async function boot() {
-  const token = getAuthToken();
-  if (!token) {
-    document.getElementById('login-gate').style.display = 'flex';
-    return;
-  }
   const status = await syncFromServer();
-  if (status === 'unauthorized') {
-    clearAuthToken();
-    document.getElementById('login-error').textContent = 'Sesión expirada, ingresa de nuevo.';
-    document.getElementById('login-gate').style.display = 'flex';
-    return;
-  }
-  document.getElementById('login-gate').style.display = 'none';
-  document.getElementById('app-root').style.display = '';
   init();
   if (status === 'offline' || status === 'error') {
     setTimeout(() => showToast('Sin conexión al servidor — usando datos locales', true), 300);
